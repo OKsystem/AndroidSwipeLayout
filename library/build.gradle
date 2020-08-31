@@ -1,26 +1,51 @@
 apply plugin: 'com.android.library'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 android {
     compileSdkVersion Integer.parseInt(project.ANDROID_BUILD_SDK_VERSION)
     buildToolsVersion project.ANDROID_BUILD_TOOLS_VERSION
 
     defaultConfig {
-        minSdkVersion 9
+        minSdkVersion Integer.parseInt(project.ANDROID_BUILD_MIN_SDK_VERSION)
         targetSdkVersion Integer.parseInt(project.ANDROID_BUILD_TARGET_SDK_VERSION)
     }
 }
 
 dependencies {
-    compile 'com.android.support:recyclerview-v7:25.2.0'
-    compile 'com.android.support:support-v4:25.2.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 }
-apply from: './gradle-mvn-push.gradle'
 
 // build a jar with source files
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
     classifier = 'sources'
 }
+
+uploadArchives {
+    repositories.mavenDeployer {
+        pom.groupId = GROUP
+        pom.artifactId = 'androidswipelayout'
+        pom.version = VERSION_NAME
+        repository url: 'file://' + new File(System.getProperty('user.home'), '.m2/repository').absolutePath
+        repository url: "http://" + MAVEN_REPO + "-${project.version.endsWith('-SNAPSHOT') ? 'snapshots' : 'releases' }"
+    }
+}
+
+task install(dependsOn: uploadArchives)
+
+task androidJavadocs(type: Javadoc) {
+    failOnError false
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
+    classifier = 'javadoc'
+    from androidJavadocs.destinationDir
+}
+
 artifacts {
     archives sourcesJar
 }
