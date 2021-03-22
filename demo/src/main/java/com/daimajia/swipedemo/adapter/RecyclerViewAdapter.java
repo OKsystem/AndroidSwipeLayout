@@ -62,34 +62,38 @@ public class RecyclerViewAdapter extends RecyclerSwipeAdapter<RecyclerViewAdapte
     }
 
     @Override
-    public void onBindViewHolder(final SimpleViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
+        if (!(viewHolder instanceof SimpleViewHolder)) {
+            throw new IllegalArgumentException("viewHolder must be instance of SimpleViewHolder");
+        }
+        final SimpleViewHolder simpleViewHolder = (SimpleViewHolder) viewHolder;
         String item = mDataset.get(position);
-        viewHolder.swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
-        viewHolder.swipeLayout.addSwipeListener(new SimpleSwipeListener() {
+        simpleViewHolder.swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
+        simpleViewHolder.swipeLayout.addSwipeListener(new SimpleSwipeListener() {
             @Override
             public void onOpen(SwipeLayout layout) {
                 YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(layout.findViewById(R.id.trash));
             }
         });
-        viewHolder.swipeLayout.setOnDoubleClickListener(new SwipeLayout.DoubleClickListener() {
+        simpleViewHolder.swipeLayout.setOnDoubleClickListener(new SwipeLayout.DoubleClickListener() {
             @Override
             public void onDoubleClick(SwipeLayout layout, boolean surface) {
                 Toast.makeText(mContext, "DoubleClick", Toast.LENGTH_SHORT).show();
             }
         });
-        viewHolder.buttonDelete.setOnClickListener(new View.OnClickListener() {
+        simpleViewHolder.buttonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mItemManger.removeShownLayouts(viewHolder.swipeLayout);
+                mItemManger.removeShownLayouts(simpleViewHolder.swipeLayout);
                 mDataset.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, mDataset.size());
                 mItemManger.closeAllItems();
-                Toast.makeText(view.getContext(), "Deleted " + viewHolder.textViewData.getText().toString() + "!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(view.getContext(), "Deleted " + simpleViewHolder.textViewData.getText().toString() + "!", Toast.LENGTH_SHORT).show();
             }
         });
-        viewHolder.textViewPos.setText((position + 1) + ".");
-        viewHolder.textViewData.setText(item);
+        simpleViewHolder.textViewPos.setText((position + 1) + ".");
+        simpleViewHolder.textViewData.setText(item);
         mItemManger.bind(viewHolder.itemView, position);
     }
 

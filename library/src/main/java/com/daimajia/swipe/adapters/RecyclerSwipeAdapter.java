@@ -1,7 +1,5 @@
 package com.daimajia.swipe.adapters;
 
-import android.view.ViewGroup;
-
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.daimajia.swipe.SwipeLayout;
@@ -12,15 +10,11 @@ import com.daimajia.swipe.util.Attributes;
 
 import java.util.List;
 
-public abstract class RecyclerSwipeAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> implements SwipeItemMangerInterface, SwipeAdapterInterface {
+import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
+
+public abstract class RecyclerSwipeAdapter<VH extends RecyclerView.ViewHolder> extends SectionedRecyclerViewAdapter implements SwipeItemMangerInterface, SwipeAdapterInterface {
 
     public SwipeItemMangerImpl mItemManger = new SwipeItemMangerImpl(this);
-
-    @Override
-    public abstract VH onCreateViewHolder(ViewGroup parent, int viewType);
-
-    @Override
-    public abstract void onBindViewHolder(VH viewHolder, final int position);
 
     @Override
     public void notifyDatasetChanged() {

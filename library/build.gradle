@@ -15,6 +15,8 @@ android {
 dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+
+    implementation 'io.github.luizgrp.sectionedrecyclerviewadapter:sectionedrecyclerviewadapter:1.0.5'
 }
 
 // build a jar with source files
@@ -29,7 +31,7 @@ uploadArchives {
         pom.artifactId = 'androidswipelayout'
         pom.version = VERSION_NAME
         repository url: 'file://' + new File(System.getProperty('user.home'), '.m2/repository').absolutePath
-        repository url: "http://" + MAVEN_REPO + "-${project.version.endsWith('-SNAPSHOT') ? 'snapshots' : 'releases' }"
+        repository url: "http://" + MAVEN_REPO + "-${pom.version.endsWith('-SNAPSHOT') ? 'snapshots' : 'releases' }"
     }
 }
 
